@@ -1,0 +1,178 @@
+root_dir: /home/user/workspace/datasets/liver_4micro
+image_ext_reg: [".ndpi", ".svs"]
+
+# create_patchs
+source: /home/user/workspace/datasets/liver_4micro
+step_size: 256
+patch_size: 256
+patch: True
+seg: True
+stitch: True
+no_auto_skip: False
+save_dir: Results
+preset: bwh_biopsy.csv
+patch_level: 0
+process_list: process_list_edited.csv
+seg_width: 1200
+
+# create_patchs default params
+seg_params: {
+  seg_level: -1,
+  sthresh: 8,
+  mthresh: 7,
+  close: 4,
+  use_otsu: False,
+  keep_ids: none,
+  exclude_ids: none
+}
+
+filter_params: {
+  a_t: 100,
+  a_h: 16,
+  max_n_holes: 8
+}
+
+vis_params: {
+  vis_level: -1,
+  line_thickness: 250
+}
+
+patch_params: {
+  use_padding: True,
+  contour_fn: four_pt
+}
+
+#extract features
+# CUDA_VISIBLE_DEVICES=0,1 python extract_features_fp.py --data_h5_dir DIR_TO_COORDS
+#  --data_slide_dir DATA_DIRECTORY --csv_path CSV_FILE_NAME --feat_dir FEATURES_DIRECTORY --batch_size 512 --slide_ext .svs
+data_h5_dir: /home/user/workspace/diffusion_model/Results
+data_slide_dir: /home/user/workspace/datasets/liver_4micro
+slide_ext: .ndpi
+csv_path: ./Results/process_list_edited.csv
+feat_dir: ./FEATURES_DIRECTORY
+batch_size: 256
+no_auto_skip: False
+custom_downsample: 1
+target_patch_size: 1
+
+# python create_splits_seq.py --task task_1_tumor_vs_normal \
+#   --seed 1 --label_frac 0.75--k 10
+# [task setting items]
+task: tumor_vs_normal
+n_classes: 2
+label_csv_path: ./dataset_csv/tumor_vs_normal.csv
+label_dict:
+  normal: 0
+  tumor : 1
+seed: 1
+# k(default: 10)
+#   number of folds'
+k: 10
+label_frac: 0.75
+val_frac: 0.1
+test_frac: 0.1
+
+# CUDA_VISIBLE_DEVICES=0 python main.py --drop_out --early_stopping --lr 2e-4 --k 10
+#  --label_frac 0.75 --exp_code task_1_tumor_vs_normal_CLAM_75 --weighted_sample
+#  --bag_loss ce --inst_loss svm --task task_1_tumor_vs_normal --model_type clam_sb
+#  --log_data --data_root_dir DATA_ROOT_DIR
+
+# data_root_dir
+data_root_dir: /home/user/workspace/diffusion_model/DATA_ROOT_DIR
+# max:epochs: 200
+max_epochs: 200
+# lr(default: 0.0001)
+lr: 1e-4
+# no_inst_cluster(default: False)
+#   disable instance-level clustering
+no_inst_cluster: False
+# inst_loss(default: None, choices: ['svm', 'ce', None])
+#   instance-level clustering loss function
+inst_loss:
+# subtyping(default: False)
+#   subtyping problem
+subtyping: False
+# bag_weight(default: 0.7)
+#   clam: weight coefficient for bag-level loss
+bag_weight: 0.7
+# B(default: 8)
+#   numbr of positive/negative patches to sample for clam
+B: 8
+# drop_out default: False
+drop_out: False
+# bag_loss(default: 'ce', choices=['svm', 'ce'])
+#   type of model (default: clam_sb, clam w/ single attention branch)
+bag_loss: ce
+# model_type( choices=['clam_sb', 'clam_mb', 'mil'], default='clam_sb')
+#   type of model (default: clam_sb, clam w/ single attention branch)
+model_type: clam_sb
+# k_start(default: -1)
+#   start fold (default: -1, last fold)
+k_start: -1
+# k_end(default: -1)
+#   end fold (default: -1, first fold)
+k_end: -1
+# reg(default: ./results)
+#   results directory 
+results_dir: ./results
+# split_dir(default: None)
+#   manually specify the set of splits to use, instead of infering from the task and label_frac argument
+split_dir: tumor_vs_normal_75
+# reg(default: 1e-5)
+#   weight decay
+reg: 1e-5
+# log_data(default: False)
+#   log data using tensorboard
+log_data: False
+# testing
+#   debugging tool
+testing: False
+# early_stopping(default: False)
+#   enable early stopping
+early_stopping: False
+# opt(choices: ['adam', 'sgd'], default: adam)
+opt: adam
+# exp_code
+#   experiment code for saving results
+exp_code: tumor_vs_normal_CLAM_75
+# weighted_sample(default: False)
+#   enable weighted sampling
+weighted_sample: False
+# model_size(choices: ['small', 'big'], default: small)
+#   size of model, does not affect mil
+model_size: small
+
+# eval.py
+# CUDA_VISIBLE_DEVICES=0 python eval.py --drop_out --k 10 --models_exp_code task_1_tumor_vs_normal_CLAM_75_s1
+# --save_exp_code task_1_tumor_vs_normal_CLAM_75_s1_cv --task task_1_tumor_vs_normal --model_type clam_sb
+# --results_dir results --data_root_dir DATA_ROOT_DIR
+# models_exp_code
+#   experiment code to load trained models
+#   (directory under results_dir containing model checkpoints)
+models_exp_code: tumor_vs_normal_CLAM_75_s1
+save_exp_code: tumor_vs_normal_CLAM_75_s1_cv
+# split(default: test, choices: ['train', 'val', 'test', 'all'])
+split: test
+# micro_average(default: False)
+#   use micro_average instead of macro_avearge for multiclass AUC
+micro_average: False
+fold: -1
+splits_dir: 
+
+# eval env
+datasets_id:
+  train: 0
+  val: 1
+  test: 2
+  all: -1
+
+# create_heatmaps.py
+# CUDA_VISIBLE_DEVICES=0,1 python create_heatmaps.py --config config.yaml
+# save_exp_code
+#   experiment code
+save_exp_code:
+# overlap
+overlap:
+# config_file (default: heatmap_config_template.yaml)
+#   -> heatmap_config
+heatmap_config: ./conf/heatmap_template.yaml
