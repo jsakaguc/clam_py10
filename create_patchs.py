@@ -1,6 +1,5 @@
 import sys
 import os
-import cv2
 import pandas as pd
 from pathlib import Path
 import yaml
@@ -8,16 +7,14 @@ import argparse
 
 sys.dont_write_bytecode = True
 
-from utils.create_patchs import (
-    seg_and_patch
-)
+from utils.create_patchs import seg_and_patch
 
 parser = argparse.ArgumentParser(description='seg and patch')
 
 parser.add_argument(
     '--config',
     type = str,
-    default="./conf/conf.yaml",
+    default="./conf/conf_template.yaml",
 	help='path to config file'
 )
 args = parser.parse_args()

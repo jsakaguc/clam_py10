@@ -1,8 +1,9 @@
-root_dir: /home/user/workspace/datasets/liver_4micro
+
+root_dir: /home/user/workspace/datasets/liver_4micro_mini
 image_ext_reg: [".ndpi", ".svs"]
 
 # create_patchs
-source: /home/user/workspace/datasets/liver_4micro
+source: /home/user/workspace/datasets/liver_4micro_mini
 step_size: 256
 patch_size: 256
 patch: True
@@ -46,7 +47,7 @@ patch_params: {
 # CUDA_VISIBLE_DEVICES=0,1 python extract_features_fp.py --data_h5_dir DIR_TO_COORDS
 #  --data_slide_dir DATA_DIRECTORY --csv_path CSV_FILE_NAME --feat_dir FEATURES_DIRECTORY --batch_size 512 --slide_ext .svs
 data_h5_dir: /home/user/workspace/diffusion_model/Results
-data_slide_dir: /home/user/workspace/datasets/liver_4micro
+data_slide_dir: /home/user/workspace/datasets/liver_4micro_mini
 slide_ext: .ndpi
 csv_path: ./Results/process_list_edited.csv
 feat_dir: ./FEATURES_DIRECTORY
@@ -146,6 +147,7 @@ model_size: small
 # CUDA_VISIBLE_DEVICES=0 python eval.py --drop_out --k 10 --models_exp_code task_1_tumor_vs_normal_CLAM_75_s1
 # --save_exp_code task_1_tumor_vs_normal_CLAM_75_s1_cv --task task_1_tumor_vs_normal --model_type clam_sb
 # --results_dir results --data_root_dir DATA_ROOT_DIR
+
 # models_exp_code
 #   experiment code to load trained models
 #   (directory under results_dir containing model checkpoints)
